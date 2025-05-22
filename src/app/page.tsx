@@ -2,10 +2,11 @@
 
 import { fetchTasks, deleteTask, createTask} from '@/lib/api';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface Task {
   id: number;
-  descrição: string;
+  descricao: string;
   data: string;
   status: 'fazer' | 'fazendo' | 'finalizado';
 }
@@ -28,9 +29,11 @@ export default function Home() {
       <ul className="space-y-2">
         {tasks.map(task => (
           <li key={task.id} className="border p-2 rounded flex justify-between">
-            <span>{task.descrição}</span>
-            <span>{task.data}</span>
-            <span>{task.status}</span>
+            <div>
+              <p><strong>Descrição:</strong>{task.descricao}</p>
+              <p><strong>Data:</strong>{task.data}</p>
+              <p><strong>Status:</strong>{task.status}</p>
+            </div>
             <button 
               onClick={() => handleDelete(task.id)} className="text-red-500">
               Remover
@@ -38,8 +41,9 @@ export default function Home() {
           </li>
         ))}
       </ul>
-      <button onClick={() => {
-        createTask()}>Criar Tarefa</button>
+      <Link rel="stylesheet" href="/novo">
+        Criar Tarefa
+      </Link>
     </main>
   );
 }
