@@ -18,8 +18,17 @@ export async function createTask(data: {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error ('Erro ao Criar a Tarefa');
-  return res.json();
+  // if (!res.ok) throw new Error ('Erro ao Criar a Tarefa');
+
+  // const taskCriada = await res.json();
+  // return taskCriada;
+
+  const text = await res.text();
+  console.log('Status:', res.status);
+  console.log('Resposta:', text);
+
+  if(!res.ok) throw new Error("Erro ao criar a tarefa:" + text);
+  return JSON.parse(text);
 }
 
 export async function deleteTask(id: number) {

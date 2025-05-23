@@ -4,15 +4,18 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createTask } from '@/lib/api';
 
-export default function NewTaskPage() {
-  const [id, setId] = useState('')
+export default function NovaTarefa() {
+  const router = useRouter();
+
   const [descricao, setDescricao] = useState('');
   const [data, setData] = useState('');
   const [status, setStatus] = useState<'fazer' | 'fazendo' | 'finalizado'>('fazer');
-  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+ 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     if (!descricao || !data) {
       alert('Preencha todos os campos.');
@@ -22,9 +25,12 @@ export default function NewTaskPage() {
     try {
       await createTask({ descricao, data, status });
       router.push('/');
+      router.refresh()
     } catch (err) {
-      console.error(err);
+      console.error('Erro ao criar a tarefa', err);
       alert('Erro ao criar tarefa');
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -32,16 +38,7 @@ export default function NewTaskPage() {
     <main className="p-4 max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-4">Nova Tarefa</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-1 font-medium">Id</label>
-          <input
-            type="number"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-            className="w-full border p-2 rounded"
-            required
-          />
-        </div>
+      
         <div>
           <label className="block mb-1 font-medium">Descrição</label>
           <input
@@ -80,8 +77,9 @@ export default function NewTaskPage() {
         <button
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          disabled={loading}
         >
-          Criar Tarefa
+          {loading ? 'Salvando' : "Salvar"}
         </button>
       </form>
     </main>
